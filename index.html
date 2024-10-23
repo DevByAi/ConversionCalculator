@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>מחשבון המרות 5.0</title>
+    <title>מחשבון המרות 7.0</title>
     <style>
         *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,sans-serif}body{max-width:800px;margin:0 auto;padding:15px;background:#f0f2f5;line-height:1.5}h1{text-align:center;color:#1a73e8;margin:10px 0}.card{background:#fff;border-radius:8px;padding:15px;margin:10px 0;box-shadow:0 2px 4px rgba(0,0,0,.1)}.tabs{display:flex;gap:10px;overflow-x:auto;margin:10px 0;padding:5px}.tab{background:#1a73e8;color:#fff;border:none;padding:8px 16px;border-radius:20px;cursor:pointer;white-space:nowrap}.tab.active{background:#1557b0}input,select{width:100%;padding:8px;margin:5px 0 10px;border:1px solid #ddd;border-radius:4px}.result{display:none;background:linear-gradient(45deg,#1a73e8,#1557b0);color:#fff;padding:15px;border-radius:8px;margin-top:15px;text-align:center;font-size:1.2em;box-shadow:0 2px 4px rgba(0,0,0,.2)}.result.show{display:block;animation:fadeIn .3s ease}.converter{display:none}.converter.active{display:block}.update-time{font-size:.8em;color:#fff;text-align:center;margin-top:5px}.version{position:fixed;bottom:10px;left:10px;color:#666;font-size:.8em}.convert-btn{background:#4caf50;color:#fff;border:none;padding:10px 20px;border-radius:4px;cursor:pointer;width:100%;font-size:1em;margin-top:10px;transition:background .3s}.convert-btn:hover{background:#45a049}@keyframes fadeIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}@media (max-width:600px){body{padding:10px}.tabs{flex-wrap:wrap}}
     </style>
 </head>
 <body>
     <h1>מחשבון המרות</h1>
-    
     <div class="tabs">
         <button class="tab active" onclick="showTab('currency')">מטבעות</button>
         <button class="tab" onclick="showTab('crypto')">קריפטו</button>
         <button class="tab" onclick="showTab('weight')">משקל</button>
+        <button class="tab" onclick="showTab('length')">מידות</button>
+        <button class="tab" onclick="showTab('temp')">טמפרטורה</button>
         <button class="tab" onclick="showTab('text')">תיקון טקסט</button>
     </div>
 
@@ -69,16 +70,81 @@
         <div id="weightResult" class="result"></div>
     </div>
 
+    <div id="length" class="converter card">
+        <select id="lengthType" onchange="toggleLengthType()">
+            <option value="distance">מרחקים</option>
+            <option value="clothes">מידות בגדים</option>
+            <option value="shoes">מידות נעליים</option>
+        </select>
+        
+        <div id="distanceDiv">
+            <input type="number" id="lengthAmount" placeholder="ערך">
+            <select id="lengthFrom">
+                <option value="cm">סנטימטר</option>
+                <option value="m">מטר</option>
+                <option value="inch">אינץ'</option>
+                <option value="foot">רגל</option>
+            </select>
+            <select id="lengthTo">
+                <option value="cm">סנטימטר</option>
+                <option value="m">מטר</option>
+                <option value="inch">אינץ'</option>
+                <option value="foot">רגל</option>
+            </select>
+        </div>
+
+        <div id="clothesDiv" style="display:none">
+            <select id="gender">
+                <option value="men">גברים</option>
+                <option value="women">נשים</option>
+            </select>
+            <input type="number" id="sizeInput" placeholder="מידה">
+            <select id="country">
+                <option value="IL">ישראל</option>
+                <option value="US">ארה"ב</option>
+                <option value="EU">אירופה</option>
+            </select>
+        </div>
+
+        <div id="shoesDiv" style="display:none">
+            <select id="shoesGender">
+                <option value="men">גברים</option>
+                <option value="women">נשים</option>
+            </select>
+            <input type="number" id="shoesInput" placeholder="מידה">
+            <select id="shoesCountry">
+                <option value="EU">אירופה</option>
+                <option value="US">ארה"ב</option>
+                <option value="UK">בריטניה</option>
+            </select>
+        </div>
+
+        <button class="convert-btn" onclick="convertLength()">המר</button>
+        <div id="lengthResult" class="result"></div>
+    </div>
+
+    <div id="temp" class="converter card">
+        <input type="number" id="tempAmount" placeholder="טמפרטורה">
+        <select id="tempFrom">
+            <option value="C">צלזיוס (°C)</option>
+            <option value="F">פרנהייט (°F)</option>
+            <option value="K">קלווין (K)</option>
+        </select>
+        <button class="convert-btn" onclick="convertTemp()">המר</button>
+        <div id="tempResult" class="result"></div>
+        <div id="tempAdvice" class="result" style="margin-top:5px;background:linear-gradient(45deg,#4caf50,#45a049)"></div>
+    </div>
+
     <div id="text" class="converter card">
         <input type="text" id="textInput" placeholder="טקסט שנכתב עם Caps Lock...">
         <button class="convert-btn" onclick="convertText()">תקן טקסט</button>
         <div id="textResult" class="result"></div>
     </div>
 
-    <div class="version">גרסה 5.0</div>
-
-    <script>
+    <div class="version">גרסה 7.0</div>
+        <script>
         const weightConversions = {g: 1, kg: 1000, lb: 453.592, oz: 28.3495};
+        const lengthConversions = {cm: 1, m: 100, inch: 2.54, foot: 30.48};
         const staticRates = {
             USD: { ILS: 3.7, EUR: 0.91, GBP: 0.79 },
             ILS: { USD: 0.27, EUR: 0.25, GBP: 0.21 },
@@ -86,22 +152,39 @@
             GBP: { USD: 1.27, ILS: 4.72, EUR: 1.16 }
         };
 
-        // מיפוי מקלדת QWERTY
-        const engToHeb = {
-            'q': '/', 'w': "'", 'e': 'ק', 'r': 'ר', 't': 'א', 'y': 'ט', 'u': 'ו', 'i': 'ן', 'o': 'ם', 'p': 'פ',
-            '[': ']', ']': '[', 'a': 'ש', 's': 'ד', 'd': 'ג', 'f': 'כ', 'g': 'ע', 'h': 'י', 'j': 'ח', 'k': 'ל',
-            'l': 'ך', ';': 'ף', "'": ',', 'z': 'ז', 'x': 'ס', 'c': 'ב', 'v': 'ה', 'b': 'נ', 'n': 'מ', 'm': 'צ',
-            ',': 'ת', '.': 'ץ', '/': '.',
-            'Q': '/', 'W': "'", 'E': 'ק', 'R': 'ר', 'T': 'א', 'Y': 'ט', 'U': 'ו', 'I': 'ן', 'O': 'ם', 'P': 'פ',
-            'A': 'ש', 'S': 'ד', 'D': 'ג', 'F': 'כ', 'G': 'ע', 'H': 'י', 'J': 'ח', 'K': 'ל', 'L': 'ך',
-            'Z': 'ז', 'X': 'ס', 'C': 'ב', 'V': 'ה', 'B': 'נ', 'N': 'מ', 'M': 'צ'
+        const clothesSizes = {
+            men: {
+                IL: ['42','44','46','48','50','52'],
+                US: ['32','34','36','38','40','42'],
+                EU: ['42','44','46','48','50','52']
+            },
+            women: {
+                IL: ['36','38','40','42','44','46'],
+                US: ['4','6','8','10','12','14'],
+                EU: ['34','36','38','40','42','44']
+            }
         };
 
-        const hebToEng = {
+        const shoesSizes = {
+            men: {
+                EU: ['39','40','41','42','43','44'],
+                US: ['6.5','7','8','9','10','10.5'],
+                UK: ['6','6.5','7.5','8.5','9.5','10']
+            },
+            women: {
+                EU: ['36','37','38','39','40','41'],
+                US: ['5.5','6','7','8','9','9.5'],
+                UK: ['3.5','4','5','6','7','7.5']
+            }
+        };
+
+        const engToHeb = {
+            'q': '/', 'w': "'", 'e': 'ק', 'r': 'ר', 't': 'א', 'y': 'ט', 'u': 'ו', 'i': 'ן', 'o': 'ם', 'p': 'פ',
+            'a': 'ש', 's': 'ד', 'd': 'ג', 'f': 'כ', 'g': 'ע', 'h': 'י', 'j': 'ח', 'k': 'ל', 'l': 'ך',
+            'z': 'ז', 'x': 'ס', 'c': 'ב', 'v': 'ה', 'b': 'נ', 'n': 'מ', 'm': 'צ',
             '/': 'q', "'": 'w', 'ק': 'e', 'ר': 'r', 'א': 't', 'ט': 'y', 'ו': 'u', 'ן': 'i', 'ם': 'o', 'פ': 'p',
-            ']': '[', '[': ']', 'ש': 'a', 'ד': 's', 'ג': 'd', 'כ': 'f', 'ע': 'g', 'י': 'h', 'ח': 'j', 'ל': 'k',
-            'ך': 'l', 'ף': ';', ',': "'", 'ז': 'z', 'ס': 'x', 'ב': 'c', 'ה': 'v', 'נ': 'b', 'מ': 'n', 'צ': 'm',
-            'ת': ',', 'ץ': '.', '.': '/'
+            'ש': 'a', 'ד': 's', 'ג': 'd', 'כ': 'f', 'ע': 'g', 'י': 'h', 'ח': 'j', 'ל': 'k', 'ך': 'l',
+            'ז': 'z', 'ס': 'x', 'ב': 'c', 'ה': 'v', 'נ': 'b', 'מ': 'n', 'צ': 'm'
         };
 
         function showTab(tabName) {
@@ -115,44 +198,29 @@
             const result = document.getElementById(elementId);
             result.textContent = text;
             result.classList.remove('show');
-            void result.offsetWidth; // Trigger reflow
+            void result.offsetWidth;
             result.classList.add('show');
         }
 
         function convertCurrency() {
             const amount = parseFloat(document.getElementById('currencyAmount').value);
-            if (isNaN(amount)) {
-                alert('נא להזין סכום תקין');
-                return;
-            }
-
+            if (!amount) { alert('נא להזין סכום תקין'); return; }
             const from = document.getElementById('currencyFrom').value;
             const to = document.getElementById('currencyTo').value;
-            const rate = staticRates[from][to];
-            const result = amount * rate;
-            
-            showResult('currencyResult', 
-                `${amount} ${from} = ${result.toFixed(2)} ${to}`);
+            const result = amount * staticRates[from][to];
+            showResult('currencyResult', `${amount} ${from} = ${result.toFixed(2)} ${to}`);
         }
 
         async function convertCrypto() {
             const amount = parseFloat(document.getElementById('cryptoAmount').value);
-            if (isNaN(amount)) {
-                alert('נא להזין סכום תקין');
-                return;
-            }
-
+            if (!amount) { alert('נא להזין סכום תקין'); return; }
             try {
                 const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,dogecoin&vs_currencies=usd,eur');
                 const data = await response.json();
-                
                 const crypto = document.getElementById('cryptoFrom').value;
                 const currency = document.getElementById('cryptoTo').value;
-                const rate = data[crypto][currency];
-                const result = amount * rate;
-                
-                showResult('cryptoResult',
-                    `${amount} ${crypto} = ${result.toFixed(2)} ${currency.toUpperCase()}`);
+                const result = amount * data[crypto][currency];
+                showResult('cryptoResult', `${amount} ${crypto} = ${result.toFixed(2)} ${currency.toUpperCase()}`);
             } catch {
                 showResult('cryptoResult', 'שגיאה בטעינת שערי המרה');
             }
@@ -160,40 +228,99 @@
 
         function convertWeight() {
             const amount = parseFloat(document.getElementById('weightAmount').value);
-            if (isNaN(amount)) {
-                alert('נא להזין משקל תקין');
-                return;
-            }
-
-            const fromUnit = document.getElementById('weightFrom').value;
-            const toUnit = document.getElementById('weightTo').value;
-            const grams = amount * weightConversions[fromUnit];
-            const result = grams / weightConversions[toUnit];
-            
-            showResult('weightResult',
-                `${amount} ${fromUnit} = ${result.toFixed(2)} ${toUnit}`);
+            if (!amount) { alert('נא להזין משקל תקין'); return; }
+            const from = document.getElementById('weightFrom').value;
+            const to = document.getElementById('weightTo').value;
+            const result = (amount * weightConversions[from]) / weightConversions[to];
+            showResult('weightResult', `${amount} ${from} = ${result.toFixed(2)} ${to}`);
         }
 
-        function detectLanguage(text) {
-            const hebChars = text.split('').filter(char => hebToEng[char]).length;
-            const engChars = text.split('').filter(char => engToHeb[char]).length;
-            return hebChars > engChars ? 'hebrew' : 'english';
+        function toggleLengthType() {
+            const type = document.getElementById('lengthType').value;
+            document.getElementById('distanceDiv').style.display = type === 'distance' ? 'block' : 'none';
+            document.getElementById('clothesDiv').style.display = type === 'clothes' ? 'block' : 'none';
+            document.getElementById('shoesDiv').style.display = type === 'shoes' ? 'block' : 'none';
+        }
+
+        function convertLength() {
+            const type = document.getElementById('lengthType').value;
+            let result = '';
+
+            switch(type) {
+                case 'distance':
+                    const amount = parseFloat(document.getElementById('lengthAmount').value);
+                    if (!amount) { alert('נא להזין ערך תקין'); return; }
+                    const from = document.getElementById('lengthFrom').value;
+                    const to = document.getElementById('lengthTo').value;
+                    const converted = (amount * lengthConversions[from]) / lengthConversions[to];
+                    result = `${amount} ${from} = ${converted.toFixed(2)} ${to}`;
+                    break;
+
+                case 'clothes':
+                    const size = document.getElementById('sizeInput').value;
+                    if (!size) { alert('נא להזין מידה'); return; }
+                    const gender = document.getElementById('gender').value;
+                    const country = document.getElementById('country').value;
+                    const sizes = clothesSizes[gender];
+                    const sizeIndex = sizes[country].indexOf(size);
+                    if (sizeIndex === -1) {
+                        result = 'מידה לא נמצאה';
+                    } else {
+                        result = Object.entries(sizes)
+                            .filter(([c]) => c !== country)
+                            .map(([c, s]) => `${c}: ${s[sizeIndex]}`)
+                            .join('\n');
+                    }
+                    break;
+
+                case 'shoes':
+                    const shoesSize = document.getElementById('shoesInput').value;
+                    if (!shoesSize) { alert('נא להזין מידה'); return; }
+                    const shoesGender = document.getElementById('shoesGender').value;
+                    const shoesCountry = document.getElementById('shoesCountry').value;
+                    const shoesSizesTable = shoesSizes[shoesGender];
+                    const shoeSizeIndex = shoesSizesTable[shoesCountry].indexOf(shoesSize);
+                    if (shoeSizeIndex === -1) {
+                        result = 'מידה לא נמצאה';
+                    } else {
+                        result = Object.entries(shoesSizesTable)
+                            .filter(([c]) => c !== shoesCountry)
+                            .map(([c, s]) => `${c}: ${s[shoeSizeIndex]}`)
+                            .join('\n');
+                    }
+                    break;
+            }
+            showResult('lengthResult', result);
+        }
+
+        function convertTemp() {
+            const amount = parseFloat(document.getElementById('tempAmount').value);
+            if (!amount) { alert('נא להזין טמפרטורה תקינה'); return; }
+            const from = document.getElementById('tempFrom').value;
+            
+            // המרה לצלזיוס
+            let celsius;
+            switch(from) {
+                case 'C': celsius = amount; break;
+                case 'F': celsius = (amount - 32) * 5/9; break;
+                case 'K': celsius = amount - 273.15; break;
+            }
+
+            let advice;
+            if (celsius < 0) advice = "❄️ קר מאוד! קח/י מעיל חם";
+            else if (celsius < 10) advice = "🧥 קר! מומלץ ללבוש שכבות";
+            else if (celsius < 20) advice = "👕 נעים. ביגוד רגיל";
+            else if (celsius < 30) advice = "😎 חם! בגדים קלילים";
+            else advice = "🌞 חם מאוד! הצטייד/י במים";
+
+            showResult('tempResult', `${amount}°${from} = ${celsius.toFixed(1)}°C`);
+            showResult('tempAdvice', advice);
         }
 
         function convertText() {
             const text = document.getElementById('textInput').value;
-            if (!text) {
-                alert('נא להזין טקסט');
-                return;
-            }
-
-            const language = detectLanguage(text);
-            const mapping = language === 'hebrew' ? hebToEng : engToHeb;
-            
-            const converted = text.split('').map(char => {
-                return mapping[char] || char;
-            }).join('');
-
+            if (!text) { alert('נא להזין טקסט'); return; }
+            const converted = text.split('').map(char => engToHeb[char] || char).join('');
             showResult('textResult', converted);
         }
     </script>
