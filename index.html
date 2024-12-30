@@ -1,119 +1,10 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-    <meta charset="UTF-8">
+    <meta Chase t="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>מחשבון המרות</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, sans-serif;
-        }
-        body {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 15px;
-            background: #f0f2f5;
-            line-height: 1.5;
-            direction: rtl;
-        }
-        h1 {
-            text-align: center;
-            color: #1a73e8;
-            margin: 10px 0;
-        }
-        .card {
-            background: #fff;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            margin: 10px 0;
-            padding: 5px;
-            justify-content: center;
-        }
-        .tab {
-            background: #1a73e8;
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .tab.active {
-            background: #1557b0;
-        }
-        input, select, .result {
-            width: 100%;
-            padding: 8px;
-            margin: 5px 0 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            text-align: center;
-        }
-        .result {
-            display: none;
-            background: linear-gradient(45deg, #1a73e8, #1557b0);
-            color: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            text-align: center;
-            font-size: 1.2em;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .result.show {
-            display: block;
-            animation: fadeIn 0.3s ease;
-        }
-        .converter {
-            display: none;
-        }
-        .converter.active {
-            display: block;
-        }
-        .convert-btn {
-            background: #4caf50;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1em;
-            margin-top: 10px;
-            transition: background 0.3s;
-        }
-        .convert-btn:hover {
-            background: #45a049;
-        }
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-            .tabs {
-                flex-wrap: wrap;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <h1>מחשבון המרות</h1>
@@ -123,9 +14,8 @@
         <button class="tab" onclick="showTab('sizes')">המרת מידות בגדים</button>
     </div>
 
-    <!-- אזור המרת שעות -->
     <div id="time" class="converter card active">
-        <input type="number" id="timeAmount" placeholder="כמות">
+        <input type="number" id="timeAmount" placeholder="המר מ: כמות" required>
         <select id="timeFrom">
             <option value="seconds">שניות</option>
             <option value="minutes">דקות</option>
@@ -133,183 +23,58 @@
             <option value="days">ימים</option>
         </select>
         <select id="timeTo">
-            <option value="seconds">שניות</option>
-            <option value="minutes">דקות</option>
-            <option value="hours">שעות</option>
-            <option value="days">ימים</option>
+            <option value="seconds">המר אל: שניות</option>
+            <option value="minutes">המר אל: דקות</option>
+            <option value="hours">המר אל: שעות</option>
+            <option value="days">המר אל: ימים</option>
         </select>
         <button class="convert-btn" onclick="convertTime()">המר</button>
+        <button class="copy-btn" onclick="copyResult('timeResult')">העתק תוצאה</button>
         <div id="timeResult" class="result"></div>
     </div>
 
-    <!-- אזור המרת AM/PM -->
     <div id="ampm" class="converter card">
-        <input type="text" id="ampmInput" placeholder="לדוגמה: 14:30 או 2:30 PM">
+        <input type="text" id="ampmInput" placeholder="המר מ: לדוגמה: 14:30 או 2:30 PM" required>
         <select id="ampmFormat">
-            <option value="24to12">24 ל-12 שעות</option>
-            <option value="12to24">12 ל-24 שעות</option>
+            <option value="24to12">בחר פורמט: 24 ל-12 שעות</option>
+            <option value="12to24">בחר פורמט: 12 ל-24 שעות</option>
         </select>
         <button class="convert-btn" onclick="convertAmPm()">המר</button>
+        <button class="copy-btn" onclick="copyResult('ampmResult')">העתק תוצאה</button>
         <div id="ampmResult" class="result"></div>
     </div>
 
-    <!-- אזור המרת מידות בגדים -->
     <div id="sizes" class="converter card">
         <select id="clothingType">
-            <option value="dresses">שמלות</option>
-            <option value="pants">מכנסיים</option>
-            <option value="shirts">חולצות</option>
-            <option value="shoes">נעליים</option>
+            <option value="dresses">בחר פריט: שמלות</option>
+            <option value="pants">בחר פריט: מכנסיים</option>
+            <option value="shirts">בחר פריט: חולצות</option>
+            <option value="shoes">בחר פריט: נעליים</option>
         </select>
-        <input type="text" id="sizeInput" placeholder="מידה">
+        <input type="text" id="sizeInput" placeholder="המר מ: מידה" required>
         <select id="fromCountry">
-            <option value="EU">אירופה</option>
-            <option value="IL">ישראל</option>
-            <option value="US">ארה"ב</option>
-            <option value="UK">בריטניה</option>
-            <option value="IT">איטליה</option>
-            <option value="AU">אוסטרליה</option>
-            <option value="JP">יפן</option>
+            <option value="EU">בחר פורמט מידה: אירופה</option>
+            <option value="IL">בחר פורמט מידה: ישראל</option>
+            <option value="US">בחר פורמט מידה: ארה"ב</option>
+            <option value="UK">בחר פורמט מידה: בריטניה</option>
+            <option value="IT">בחר פורמט מידה: איטליה</option>
+            <option value="AU">בחר פורמט מידה: אוסטרליה</option>
+            <option value="JP">בחר פורמט מידה: יפן</option>
         </select>
         <select id="toCountry">
-            <option value="EU">אירופה</option>
-            <option value="IL">ישראל</option>
-            <option value="US">ארה"ב</option>
-            <option value="UK">בריטניה</option>
-            <option value="IT">איטליה</option>
-            <option value="AU">אוסטרליה</option>
-            <option value="JP">יפן</option>
+            <option value="EU">אל: אירופה</option>
+            <option value="IL">אל: ישראל</option>
+            <option value="US">אל: ארה"ב</option>
+            <option value="UK">אל: בריטניה</option>
+            <option value="IT">אל: איטליה</option>
+            <option value="AU">אל: אוסטרליה</option>
+            <option value="JP">אל: יפן</option>
         </select>
         <button class="convert-btn" onclick="convertSize()">המר</button>
+        <button class="copy-btn" onclick="copyResult('sizeResult')">העתק תוצאה</button>
         <div id="sizeResult" class="result"></div>
     </div>
 
-    <script>
-        function showTab(tabId) {
-            const tabs = document.querySelectorAll('.tab');
-            const converters = document.querySelectorAll('.converter');
-            tabs.forEach(tab => tab.classList.remove('active'));
-            converters.forEach(converter => converter.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
-        }
-
-        function convertTime() {
-            const amount = parseFloat(document.getElementById('timeAmount').value);
-            const from = document.getElementById('timeFrom').value;
-            const to = document.getElementById('timeTo').value;
-
-            if (isNaN(amount)) {
-                alert('אנא הזן כמות חוקית');
-                return;
-            }
-
-            let amountInSeconds;
-            switch (from) {
-                case 'seconds': amountInSeconds = amount; break;
-                case 'minutes': amountInSeconds = amount * 60; break;
-                case 'hours': amountInSeconds = amount * 3600; break;
-                case 'days': amountInSeconds = amount * 86400; break;
-            }
-
-            let convertedAmount;
-            switch (to) {
-                case 'seconds': convertedAmount = amountInSeconds; break;
-                case 'minutes': convertedAmount = amountInSeconds / 60; break;
-                case 'hours': convertedAmount = amountInSeconds / 3600; break;
-                case 'days': convertedAmount = amountInSeconds / 86400; break;
-            }
-
-            document.getElementById('timeResult').innerText = `${amount} ${from} שווה ל-${convertedAmount.toFixed(2)} ${to}`;
-            document.getElementById('timeResult').classList.add('show');
-        }
-
-        function convertAmPm() {
-            const time = document.getElementById('ampmInput').value.trim();
-            const format = document.getElementById('ampmFormat').value;
-            let result = '';
-
-            try {
-                if (format === '24to12') {
-                    const [hours, minutes] = time.split(':');
-                    const period = hours >= 12 ? 'PM' : 'AM';
-                    const adjustedHours = hours % 12 || 12;
-                    result = `${adjustedHours}:${minutes} ${period}`;
-                } else if (format === '12to24') {
-                    const [timePart, period] = time.split(' ');
-                    let [hours, minutes] = timePart.split(':').map(Number);
-                    if (period.toUpperCase() === 'PM' && hours !== 12) {
-                        hours += 12;
-                    } else if (period.toUpperCase() === 'AM' && hours === 12) {
-                        hours = 0;
-                    }
-                    result = `${hours.toString().padStart(2, '0')}:${minutes}`;
-                }
-            } catch (e) {
-                result = 'פורמט שגוי, נסה שוב';
-            }
-
-            document.getElementById('ampmResult').innerText = result;
-            document.getElementById('ampmResult').classList.add('show');
-        }
-
-        const sizeCharts = {
-            dresses: {
-                EU: ["30", "32", "34", "36", "38", "40", "42", "44", "46", "48", "50", "52"],
-                IL: ["32", "34", "36", "38", "40", "42", "44", "46", "48", "50", "52"],
-                US: ["0", "2", "4", "6", "8", "10", "12", "14", "16", "18", "20"],
-                UK: ["4", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24"],
-                IT: ["36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-                AU: ["4", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24"],
-                JP: ["5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25"],
-            },
-            pants: {
-                EU: ["30", "32", "34", "36", "38", "40", "42", "44", "46", "48", "50", "52"],
-                IL: ["32", "34", "36", "38", "40", "42", "44", "46", "48", "50", "52"],
-                US: ["0", "2", "4", "6", "8", "10", "12", "14", "16", "18", "20"],
-                UK: ["4", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24"],
-                IT: ["36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-                AU: ["4", "6", "8", "10", "12", "14", "16", "18", "20", "22", "24"],
-                JP: ["5", "7", "9", "11", "13", "15", "17", "19", "21", "23", "25"],
-            },
-            shirts: {
-                EU: ["34", "36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-                IL: ["36", "38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-                US: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"],
-                UK: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"],
-                IT: ["38", "40", "42", "44", "46", "48", "50", "52", "54", "56"],
-                AU: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"],
-                JP: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "4XL", "5XL"],
-            },
-            shoes: {
-                EU: ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48"],
-                IL: ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47", "48"],
-                US: ["4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
-                UK: ["3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13"],
-                IT: ["34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45"],
-                AU: ["4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15"],
-                JP: ["21", "22", "23", "24", "25", "26", "27", "28", "29", "30"],
-            },
-        };
-
-        function convertSize() {
-            const clothingType = document.getElementById('clothingType').value;
-            const sizeInput = document.getElementById('sizeInput').value.trim();
-            const fromCountry = document.getElementById('fromCountry').value;
-            const toCountry = document.getElementById('toCountry').value;
-
-            const chart = sizeCharts[clothingType];
-            const fromIndex = chart[fromCountry].indexOf(sizeInput);
-
-            if (fromIndex === -1) {
-                document.getElementById('sizeResult').innerText = 'המידה אינה קיימת בטבלת ההמרות.';
-            } else {
-                const convertedSize = chart[toCountry][fromIndex];
-                document.getElementById('sizeResult').innerText = `המידה ${sizeInput} ב-${fromCountry} שווה למידה ${convertedSize} ב-${toCountry}`;
-            }
-
-            document.getElementById('sizeResult').classList.add('show');
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
