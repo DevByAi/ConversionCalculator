@@ -17,7 +17,7 @@
 
 ## קרדיט
 
-הקוד נכתב על ידי [DevByAI] (https://github.com/DevByAi).
+הקוד נכתב על ידי [DevByAI](https://github.com/DevByAi).
 
 ## רישוי
 
