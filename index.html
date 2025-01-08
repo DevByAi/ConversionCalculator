@@ -12,6 +12,7 @@
         <button class="tab active" onclick="showTab('time')">המרת שעות</button>
         <button class="tab" onclick="showTab('ampm')">המרת AM/PM</button>
         <button class="tab" onclick="showTab('sizes')">המרת מידות בגדים</button>
+        <button class="tab" onclick="showTab('bmi')">מחשבון BMI</button>
     </div>
 
     <div id="time" class="converter card active">
@@ -73,6 +74,32 @@
         <button class="convert-btn" onclick="convertSize()">המר</button>
         <button class="copy-btn" onclick="copyResult('sizeResult')">העתק תוצאה</button>
         <div id="sizeResult" class="result"></div>
+    </div>
+
+    <div id="bmi" class="converter card">
+        <h2>מחשבון BMI</h2>
+        <input type="number" id="weight" placeholder="הכנס משקל (ק"ג)" required>
+        <input type="number" id="height" placeholder="הכנס גובה (מ')" required>
+        <input type="number" id="age" placeholder="הכנס גיל (שנים)" required>
+        <select id="gender" required>
+            <option value="" disabled selected>בחר מגדר</option>
+            <option value="male">זכר</option>
+            <option value="female">נקבה</option>
+        </select>
+        <button class="convert-btn" onclick="calculateBMI()">חשב BMI</button>
+        <div id="bmiResult" class="result"></div>
+        <div id="bmiScale" class="bmi-scale">
+            <div class="scale-labels">
+                <span>השמנת יתר</span>
+                <span>משקל תקין</span>
+                <span>בינוני</span>
+                <span>תת משקל</span>
+            </div>
+            <div class="scale">
+                <div id="marker" class="marker"></div>
+            </div>
+        </div>
+        <div id="זה markerExplanation" class="marker-explanation"></div>
     </div>
 
     <script src="script.js"></script>
