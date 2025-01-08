@@ -137,4 +137,66 @@ function copyResult(resultId) {
     document.execCommand('copy');
     document.body.removeChild(input);
     alert('הטקסט הועתק בהצלחה');
+}
+
+function calculateBMI() {
+    const weight = parseFloat(document.getElementById('weight').value);
+    const height = parseFloat(document.getElementById('height').value);
+    const age = parseInt(document.getElementById('age').value);
+    const gender = document.getElementById('gender').value;
+
+    // בדיקות קלט
+    if (isNaN(weight) || weight <= 0) {
+        alert('אנא הזן משקל חוקי (ק"ג)');
+        return;
+    }
+    if (isNaN(height) || height <= 0) {
+        alert('אנא הזן גובה חוקי (מ)');
+        return;
+    }
+    if (isNaN(age) || age <= 0) {
+        alert('אנא הזן גיל חוקי (שנים)');
+        return;
+    }
+    if (!gender) {
+        alert('אנא בחר מגדר');
+        return;
+    }
+
+    // אם הגובה מוזן בסנטימטרים, יש לחלק ב-100
+    const heightInMeters = height >= 3 ? height / 100 : height;
+
+    // חישוב BMI
+    const bmi = weight / (heightInMeters * heightInMeters);
+    let resultText = `BMI שלך הוא ${bmi.toFixed(2)}. `;
+
+    // המלצות על סמך תוצאת ה-BMI
+    let scalePosition = 0; // מיקום הסמן
+    let pronoun = gender === 'female' ? 'את' : 'אתה'; // שינוי כינוי בהתאם למגדר
+
+    if (bmi < 18.5) {
+        resultText += `${pronoun} מתחת למשקל התקני. מומלץ להתייעץ עם רופא או תזונאי.`;
+        scalePosition = 0; // תת משקל
+    } else if (bmi >= 18.5 && bmi < 24.9) {
+        resultText += `${pronoun} במשקל תקני. שמור על אורח חיים בריא!`;
+        scalePosition = 50; // משקל תקין
+    } else if (bmi >= 25 && bmi < 29.9) {
+        resultText += `${pronoun} מעל למשקל התקני. מומלץ לשקול ירידה במשקל.`;
+        scalePosition = 75; // בינוני
+    } else {
+        resultText += `${pronoun} סובל/ת מעודף משקל. מומלץ להתייעץ עם רופא או תזונאי.`;
+        scalePosition = 100; // השמנת יתר
+    }
+
+    // הצגת התוצאה
+    document.getElementById('bmiResult').innerText = resultText;
+    document.getElementById('bmiResult').classList.add('show');
+
+    // עדכון מיקום הסמן
+    const marker = document.getElementById('marker');
+    marker.style.left = `${scalePosition}%`;
+
+    // עדכון הסבר על מיקום הסמן
+    const explanation = document.getElementById('markerExplanation');
+    explanation.innerText = `הסמן מראה את המיקום שלך על סרגל ה-BMI.`;
 } 
