@@ -105,4 +105,33 @@ input, select, .result {
     .tabs {
         flex-wrap: wrap;
     }
+}
+.bmi-scale {
+    position: relative;
+    height: 30px;
+    margin-top: 15px;
+    background: linear-gradient(to right, blue, green, orange, red);
+    border-radius: 5px;
+}
+.scale {
+    position: relative;
+    height: 100%;
+}
+.marker {
+    position: absolute;
+    width: 12px;
+    height: 30px;
+    background: white;
+    border: 2px solid black;
+    border-radius: 5px;
+    transition: left 0.3s;
+    top: -5px;
+}
+.scale-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5px;
+    font-size: 0.8em;
+    color: white;
+    font-weight: bold;
 } 
